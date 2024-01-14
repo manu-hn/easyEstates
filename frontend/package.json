@@ -1,0 +1,38 @@
+{
+  "name": "easy-estate",
+  "version": "1.0.0",
+  "description": "Easy Estate is a real Estate MERN Stack Stack Web App",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "npx parcel public/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manu-hn/easy-estate.git"
+  },
+  "keywords": [
+    "EasyEstate",
+    "RealEstate",
+    "BuyHomes",
+    "Properties"
+  ],
+  "author": "Manu H N",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manu-hn/easy-estate/issues"
+  },
+  "homepage": "https://github.com/manu-hn/easy-estate#readme",
+  "devDependencies": {
+    "parcel": "^2.11.0",
+    "postcss": "^8.4.33",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.2"
+  }
+}
