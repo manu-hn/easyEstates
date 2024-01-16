@@ -1,0 +1,34 @@
+{
+  "name": "easy-estate",
+  "version": "1.0.0",
+  "description": "Backend for easyEstates",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "dev": "nodemon backend/index.js",
+    "start": "node backend/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manu-hn/easy-estate.git"
+  },
+  "keywords": [
+    "backend",
+    "easyEstates"
+  ],
+  "author": "Manu H N",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manu-hn/easy-estate/issues"
+  },
+  "homepage": "https://github.com/manu-hn/easy-estate#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.4"
+  }
+}
