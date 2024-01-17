@@ -4,8 +4,9 @@ import Home from './nav/Home';
 import About from './nav/About';
 import Profile from './nav/Profile';
 import Login from "./auth/Login.js";
-import Logout from "./auth/Logout.js";
+
 import Layout from './Layout.js';
+import SignUp from './auth/SignUp.js';
 
 const Body = () => {
 
@@ -27,13 +28,14 @@ const Body = () => {
                     element : <Profile />
                 },
                 {
-                    path : 'login',
+                    path : '/login',
                     element : <Login />
                 },
                 {
-                    path : 'logout',
-                    element : <Logout />
+                    path :"/signup",
+                    element : <SignUp />
                 }
+               
             ]
         },
        
