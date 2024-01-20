@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ESTATE_URL } from '../../utils/Constants';
+import OAuth from "./OAuth.js";
 
 
 
@@ -45,7 +46,8 @@ const SignUp = () => {
                 <input className='rounded-lg outline-none border p-3' type="email" name="email" id="email" placeholder='Enter Email' ref={email} />
                 <input className='rounded-lg outline-none border p-3' type="number" name="mobile" id="mobile" placeholder='Enter Mobile' ref={mobile} />
                 <input className='rounded-lg outline-none border p-3' type="password" name="password" id="password" placeholder='Enter Password' ref={password} />
-                <button disabled={isLoading} type='submit' className='bg-[#E50914] text-white disabled:opacity-20 p-3 rounded-lg hover:opacity-80'>{isLoading ? "Loading..." : "Sign Up"}</button>
+                <button disabled={isLoading} type='submit' className='bg-[#E58914] text-white disabled:opacity-20 p-3 rounded-lg hover:opacity-80'>{isLoading ? "Loading..." : "Sign Up"}</button>
+           <OAuth />
             </form>
             <div className='flex gap-3 mt-6'>
                 <p>Already have an Account?</p>

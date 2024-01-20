@@ -3,6 +3,9 @@ import UserModel from "../models/User.model.js";
 import { userSchemaValidate } from "../utils/error.js";
 import { passwordHasher, isPasswordValid } from "../utils/PswdHasher.js";
 import { generateToken } from "../utils/tokenGenerator.js";
+import {randomPasswordGenerator} from "../utils/PasswordGenerator.js";
+import { randomUniqueUsernameGenerator } from "../utils/UserNameGenarator.js";
+
 const { CREATED, BAD_REQUEST, NOT_ACCEPTABLE, FORBIDDEN, OK } = StatusCodes;
 
 export const userSignup = async (request, response, next) => {
@@ -24,7 +27,11 @@ export const userSignup = async (request, response, next) => {
                 fullName,
                 username, email, password: hashedPassword, mobile
             });
-            return response.status(CREATED).json({ error: false, statusCode: CREATED, message: 'user created successfully', data: newUser })
+
+            
+            return response.status(CREATED).json({ error: false, statusCode: CREATED, message: 'user created successfully', data: {
+                uid : newUser._id, fullName : newUser.fullName  ,email : newUser.email, username : newUser.username, avatar : newUser.avatar
+            } })
         }
 
     } catch (error) {
@@ -50,13 +57,14 @@ export const userLogin = async (request, response, next) => {
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 1);
             const accessToken = generateToken(isUserAvailable._id, isUserAvailable.username);
-            response.cookie('accessToken',accessToken, { httpOnly: true,sameSite : "None" })
-            .status(OK)
-            .json({
-                error: false, statusCode: OK, message: `Login Successful`, accessToken, data: {
-                    uid: isUserAvailable._id, username: isUserAvailable.username, email: isUserAvailable.email,
-                }
-            })
+            response.cookie('accessToken', accessToken, { httpOnly: true, sameSite: "None", path: "/" });
+
+            response.status(OK)
+                .json({
+                    error: false, statusCode: OK, message: `Login Successful`, accessToken, data: {
+                        uid: isUserAvailable._id, username: isUserAvailable.username, email: isUserAvailable.email,
+                    }
+                })
         } else {
 
 
@@ -68,3 +76,46 @@ export const userLogin = async (request, response, next) => {
     }
 }
 
+export const userGoogleAuthentication = async (request, response, next) => {
+    try {
+        const { email,name, image } = request.body;
+
+        const isUserAvailable = await UserModel.findOne({ email });
+
+        //if user not found
+        if (!isUserAvailable) {
+            const generatedPassword=randomPasswordGenerator();
+            const hashedPassword=await passwordHasher(generatedPassword);
+            const username = await randomUniqueUsernameGenerator(email);
+
+            const newUser=await UserModel.create({
+                fullName : name,
+                username, email, password: hashedPassword,avatar : image
+            });
+
+            const token =generateToken(username, email);
+
+            response.cookie('accessToken', token, { httpOnly: true, sameSite: "None", path: "/" });
+            return response.status(CREATED).json({error : false, message : 'User Created Successfully !', data :{
+                uid : newUser._id, fullName : newUser.fullName  ,email : newUser.email, username : newUser.username, avatar : newUser.avatar
+            }})
+
+        } else {
+            const token = generateToken(isUserAvailable._id, isUserAvailable.email);
+
+            response.cookie('accessToken', token, { httpOnly: true, sameSite: "None", path: "/" });
+
+            response.status(OK).json({error : false, statusCode: OK, message : "Login Successful", data : {
+                uid : isUserAvailable._id,
+                username: isUserAvailable.username,
+                email  : isUserAvailable.email, 
+            }})
+
+
+        }
+
+
+    } catch (error) {
+        next(error)
+    }
+}

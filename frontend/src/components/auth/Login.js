@@ -2,12 +2,16 @@ import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ESTATE_URL } from '../../utils/Constants';
-import Cookies from 'js-cookie';
+import { useDispatch, useSelector } from "react-redux";
+import { loginFailure, loginInitiated, loginSuccess } from "../../redux/slices/userSlice.js"
+import OAuth from './OAuth.js';
 
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate=useNavigate();
+
+  const { loading, error } = useSelector(state => state.user)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const email = useRef(null);
   const password = useRef(null);
@@ -15,18 +19,15 @@ const Login = () => {
 
   async function handleLoginSubmit(e) {
     e.preventDefault();
-    setIsLoading(true)
+    dispatch(loginInitiated())
     try {
       const userData = { email: email.current.value, password: password.current.value, }
       const response = await axios.post(ESTATE_URL + 'login', JSON.stringify(userData), { headers: { 'Content-type': 'application/json' } });
-
-      Cookies.set('accessToken', response.data.accessToken);
-      console.log(response.data)
-      setIsLoading(false);
+      console.log("respo", response.data)
+      dispatch(loginSuccess(response.data.data))
       navigate('/')
     } catch (error) {
-      setIsLoading(false);
-      console.log(error);
+      dispatch(loginFailure(error.response.data.message))
 
     }
   }
@@ -37,13 +38,17 @@ const Login = () => {
       <form className='flex flex-col gap-4' onSubmit={handleLoginSubmit}>
         <input className='rounded-lg outline-none border p-3' type="email" name="email" id="email" placeholder='Enter Email' ref={email} />
         <input className='rounded-lg outline-none border p-3' type="password" name="password" id="password" placeholder='Enter Password' ref={password} />
-        <button disabled={isLoading} type='submit' className='bg-[#E50914] text-white disabled:opacity-20 p-3 rounded-lg hover:opacity-80'>{isLoading ? "Loading..." : "Login"}</button>
+        <button disabled={loading} type='submit' className='bg-[#E58914] text-white disabled:opacity-20 p-3 rounded-lg hover:opacity-80'>{loading ? "Loading..." : "Login"}</button>
+
+        <OAuth />
       </form>
+
       <div className='flex gap-3 mt-6'>
         <p>Don&apos;t have an account?</p>
         <Link to={'/signup'}> <span className='text-blue-600'>Sign Up</span> </Link>
 
       </div>
+      <p className='text-red-500 text-sm'>{error}</p>
     </div>
   )
 }

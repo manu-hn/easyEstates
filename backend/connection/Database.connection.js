@@ -1,6 +1,6 @@
 import { connect } from "mongoose";
 import { config } from "dotenv";
-import { error } from "console";
+
 
 config();
 
