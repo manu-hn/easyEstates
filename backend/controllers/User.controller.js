@@ -63,6 +63,7 @@ export const userLogin = async (request, response, next) => {
                 .json({
                     error: false, statusCode: OK, message: `Login Successful`, accessToken, data: {
                         uid: isUserAvailable._id, username: isUserAvailable.username, email: isUserAvailable.email,
+                        avatar : isUserAvailable.avatar
                     }
                 })
         } else {
@@ -108,7 +109,8 @@ export const userGoogleAuthentication = async (request, response, next) => {
             response.status(OK).json({error : false, statusCode: OK, message : "Login Successful", data : {
                 uid : isUserAvailable._id,
                 username: isUserAvailable.username,
-                email  : isUserAvailable.email, 
+                email  : isUserAvailable.email,
+                avatar : isUserAvailable.avatar 
             }})
 
 

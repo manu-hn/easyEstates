@@ -5,7 +5,9 @@ import axios from 'axios';
 import { ESTATE_URL } from '../../utils/Constants.js';
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slices/userSlice.js";
+import { useNavigate } from "react-router-dom"
 const OAuth = () => {
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const handleGoogleAuthentication = async () => {
         try {
@@ -21,7 +23,7 @@ const OAuth = () => {
                 { headers: { 'Content-Type': 'application/json' } });
 
             dispatch(loginSuccess(backendResponse.data.data));
-
+            navigate('/')
             console.log(response)
 
         } catch (error) {

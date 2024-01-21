@@ -20,9 +20,7 @@ const UserSchema = new Schema({
     },
     mobile: {
         type: String,
-        required: true,
-       
-        default: "user mobile"
+        default: null
     },
     password: {
         type: String,
