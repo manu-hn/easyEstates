@@ -7,6 +7,7 @@ import { loginFailure, loginInitiated, loginSuccess } from "../../redux/slices/u
 import OAuth from './OAuth.js';
 
 
+
 const Login = () => {
 
   const { loading, error } = useSelector(state => state.user)
@@ -22,12 +23,17 @@ const Login = () => {
     dispatch(loginInitiated())
     try {
       const userData = { email: email.current.value, password: password.current.value, }
-      const response = await axios.post(ESTATE_URL + 'login', JSON.stringify(userData), { headers: { 'Content-type': 'application/json' } });
-      console.log("respo", response.data)
+      const response = await axios.post(ESTATE_URL + 'login', JSON.stringify(userData),
+        {
+          headers: { 'Content-type': 'application/json' },
+          withCredentials: true,
+        });
+        
+
       dispatch(loginSuccess(response.data.data))
       navigate('/')
     } catch (error) {
-      dispatch(loginFailure(error.response.data.message))
+      dispatch(loginFailure(error?.response?.data?.message))
 
     }
   }
@@ -48,7 +54,7 @@ const Login = () => {
         <Link to={'/signup'}> <span className='text-blue-600'>Sign Up</span> </Link>
 
       </div>
-      <p className='text-red-500 text-sm'>{error}</p>
+      {/* <p className='text-red-500 text-sm'>{error}</p> */}
     </div>
   )
 }

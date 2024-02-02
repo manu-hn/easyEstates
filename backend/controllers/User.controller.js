@@ -3,8 +3,9 @@ import UserModel from "../models/User.model.js";
 import { userSchemaValidate } from "../utils/error.js";
 import { passwordHasher, isPasswordValid } from "../utils/PswdHasher.js";
 import { generateToken } from "../utils/tokenGenerator.js";
-import {randomPasswordGenerator} from "../utils/PasswordGenerator.js";
+import { randomPasswordGenerator } from "../utils/PasswordGenerator.js";
 import { randomUniqueUsernameGenerator } from "../utils/UserNameGenarator.js";
+
 
 const { CREATED, BAD_REQUEST, NOT_ACCEPTABLE, FORBIDDEN, OK } = StatusCodes;
 
@@ -28,10 +29,12 @@ export const userSignup = async (request, response, next) => {
                 username, email, password: hashedPassword, mobile
             });
 
-            
-            return response.status(CREATED).json({ error: false, statusCode: CREATED, message: 'user created successfully', data: {
-                uid : newUser._id, fullName : newUser.fullName  ,email : newUser.email, username : newUser.username, avatar : newUser.avatar
-            } })
+
+            return response.status(CREATED).json({
+                error: false, statusCode: CREATED, message: 'user created successfully', data: {
+                    uid: newUser._id, fullName: newUser.fullName, email: newUser.email, username: newUser.username, avatar: newUser.avatar
+                }
+            })
         }
 
     } catch (error) {
@@ -44,6 +47,7 @@ export const userLogin = async (request, response, next) => {
     const { email, password } = request.body;
 
     try {
+        console.log(request)
 
         const isUserAvailable = await UserModel.findOne({ email });
 
@@ -56,15 +60,24 @@ export const userLogin = async (request, response, next) => {
         if (isPasswordCorrect) {
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 1);
-            const accessToken = generateToken(isUserAvailable._id, isUserAvailable.username);
-            response.cookie('accessToken', accessToken, { httpOnly: true, sameSite: "None", path: "/" });
-
-            response.status(OK)
+            const token = await generateToken(isUserAvailable._id);
+            // console.log("access controller", token)
+            const hashedToken = await passwordHasher(token)
+            console.log("hashed", hashedToken)
+            response.cookie('access_token', token, {
+                httpOnly: true,
+                domain: "localhost",
+                origin: "http://localhost:1234",
+                path: "/api/estates",
+                sameSite: "None",
+                expires: expiryDate,
+                secure: true,
+            }).status(OK)
                 .json({
-                    error: false, statusCode: OK, message: `Login Successful`, accessToken, data: {
-                        uid: isUserAvailable._id, username: isUserAvailable.username, email: isUserAvailable.email,
-                        avatar : isUserAvailable.avatar
-                    }
+                    error: false, statusCode: OK, message: `Login Successful`, access_token: token, data: {
+                        uid: isUserAvailable._id, fullName: isUserAvailable.fullName, username: isUserAvailable.username, email: isUserAvailable.email,
+                        avatar: isUserAvailable.avatar, mobile: isUserAvailable.mobile, 
+                    }, hashedToken
                 })
         } else {
 
@@ -79,43 +92,107 @@ export const userLogin = async (request, response, next) => {
 
 export const userGoogleAuthentication = async (request, response, next) => {
     try {
-        const { email,name, image } = request.body;
+        const { email, name, image } = request.body;
 
         const isUserAvailable = await UserModel.findOne({ email });
 
         //if user not found
         if (!isUserAvailable) {
-            const generatedPassword=randomPasswordGenerator();
-            const hashedPassword=await passwordHasher(generatedPassword);
+            const generatedPassword = randomPasswordGenerator();
+            const hashedPassword = await passwordHasher(generatedPassword);
             const username = await randomUniqueUsernameGenerator(email);
 
-            const newUser=await UserModel.create({
-                fullName : name,
-                username, email, password: hashedPassword,avatar : image
+            const newUser = await UserModel.create({
+                fullName: name,
+                username, email, password: hashedPassword, avatar: image
             });
 
-            const token =generateToken(username, email);
+            const token = generateToken(username, email);
 
             response.cookie('accessToken', token, { httpOnly: true, sameSite: "None", path: "/" });
-            return response.status(CREATED).json({error : false, message : 'User Created Successfully !', data :{
-                uid : newUser._id, fullName : newUser.fullName  ,email : newUser.email, username : newUser.username, avatar : newUser.avatar
-            }})
+            return response.status(CREATED).json({
+                error: false, message: 'User Created Successfully !', data: {
+                    uid: newUser._id, fullName: newUser.fullName, email: newUser.email, username: newUser.username, avatar: newUser.avatar
+                }
+            })
 
         } else {
             const token = generateToken(isUserAvailable._id, isUserAvailable.email);
 
             response.cookie('accessToken', token, { httpOnly: true, sameSite: "None", path: "/" });
 
-            response.status(OK).json({error : false, statusCode: OK, message : "Login Successful", data : {
-                uid : isUserAvailable._id,
-                username: isUserAvailable.username,
-                email  : isUserAvailable.email,
-                avatar : isUserAvailable.avatar 
-            }})
+            response.status(OK).json({
+                error: false, statusCode: OK, message: "Login Successful", data: {
+                    uid: isUserAvailable._id,
+                    username: isUserAvailable.username,
+                    email: isUserAvailable.email,
+                    avatar: isUserAvailable.avatar
+                }
+            })
 
 
         }
 
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const updateUserDetails = async (request, response, next) => {
+
+    try {
+        const { id } = request.params;
+
+        const { password, fullName, username, email, avatar } = request.body;
+
+        // if (request?.user?.uid !== id) {
+        //     return response.status(401).json({ error: true, message: `Not Authorized` })
+        // }
+
+        const isUserAvailable = await UserModel.findById({ _id: id });
+
+        if (!isUserAvailable) {
+            return response.status(401).json({ error: true, message: `User not Authorized` })
+        }
+
+        let hashedPassword;
+        if (password) { hashedPassword = await passwordHasher(password); }
+
+
+        const updatedUser = await UserModel.findByIdAndUpdate({ _id: id }, {
+            $set: {
+                fullName, username, email, password: hashedPassword, avatar
+            }
+        }, {
+            new: true,
+            runValidators: true
+        })
+
+        const sendData = {
+            fullName: updatedUser.fullName, username: updatedUser.username, email: updatedUser.email
+            , avatar: updatedUser.avatar
+        }
+
+        return response.status(200).json({ error: false, message: `User Details Updated Successfully`, data: sendData })
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const deleteUserAccount = async (request, response, next) => {
+    try {
+        const { id } = request.params;
+        // if (request?.user?.uid !== id) {
+        //     return response.status(401).json({ error: true, message: `Not Authorized` })
+        // }
+
+        const deleteUser = await UserModel.findByIdAndDelete({ _id: id });
+
+        return response.status(200).json({ error: false, message: 'User Deleted Successfully!' });
 
     } catch (error) {
         next(error)
