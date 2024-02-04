@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteUserAccount, updateUserDetails, userGoogleAuthentication, userLogin, userSignup } from "../controllers/User.controller.js";
+import { deleteUserAccount, updateUserDetails, userGoogleAuthentication, userLogin, userSignOut, userSignup } from "../controllers/User.controller.js";
 import { userAuthByToken } from "../utils/userAuth.js";
 
 const router=express.Router();
@@ -8,7 +8,8 @@ const router=express.Router();
 router.post('/signup', userSignup);
 router.post('/login', userLogin);
 router.post('/google-auth', userGoogleAuthentication);
-router.post('/update/:id',userAuthByToken,  updateUserDetails);
-router.delete('/delete/:id', deleteUserAccount);
+router.post('/update/:id', userAuthByToken, updateUserDetails);
+router.delete('/delete/:id', userAuthByToken,deleteUserAccount);
+router.get('/sign-out', userSignOut)
 
 export default router;

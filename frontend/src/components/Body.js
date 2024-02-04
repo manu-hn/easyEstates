@@ -7,6 +7,7 @@ import Login from "./auth/Login.js";
 import SignUp from './auth/SignUp.js';
 import PrivateRoute from './auth/PrivateRoute.js';
 import Header from './nav/Header.js';
+import CreateListing from './Listing/CreateListing.js';
 
 const Body = () => {
 
@@ -24,6 +25,7 @@ const Body = () => {
                     <Route path='/signup' element={<SignUp />} />
                     <Route element={<PrivateRoute />}>
                         <Route path='/profile' element={<Profile />} />
+                        <Route path='/create-listing' element={<CreateListing />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

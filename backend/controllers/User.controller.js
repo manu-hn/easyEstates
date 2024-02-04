@@ -47,7 +47,6 @@ export const userLogin = async (request, response, next) => {
     const { email, password } = request.body;
 
     try {
-        console.log(request)
 
         const isUserAvailable = await UserModel.findOne({ email });
 
@@ -63,21 +62,22 @@ export const userLogin = async (request, response, next) => {
             const token = await generateToken(isUserAvailable._id);
             // console.log("access controller", token)
             const hashedToken = await passwordHasher(token)
-            console.log("hashed", hashedToken)
-            response.cookie('access_token', token, {
-                httpOnly: true,
-                domain: "localhost",
-                origin: "http://localhost:1234",
-                path: "/api/estates",
-                sameSite: "None",
-                expires: expiryDate,
-                secure: true,
-            }).status(OK)
+            // console.log("hashed", hashedToken)
+            // response.cookie('access_token', hashedToken, {
+            //     httpOnly: true,
+            //     domain: "localhost",
+            //     origin: "http://localhost:5000",
+            //     path: "/",
+            //     sameSite: "None",
+            //     expires: expiryDate,
+            //     secure: true,
+            // });
+            response.status(OK)
                 .json({
                     error: false, statusCode: OK, message: `Login Successful`, access_token: token, data: {
                         uid: isUserAvailable._id, fullName: isUserAvailable.fullName, username: isUserAvailable.username, email: isUserAvailable.email,
-                        avatar: isUserAvailable.avatar, mobile: isUserAvailable.mobile, 
-                    }, hashedToken
+                        avatar: isUserAvailable.avatar, mobile: isUserAvailable.mobile,
+                    }
                 })
         } else {
 
@@ -145,6 +145,7 @@ export const updateUserDetails = async (request, response, next) => {
     try {
         const { id } = request.params;
 
+
         const { password, fullName, username, email, avatar } = request.body;
 
         // if (request?.user?.uid !== id) {
@@ -171,6 +172,7 @@ export const updateUserDetails = async (request, response, next) => {
         })
 
         const sendData = {
+            uid: updatedUser._id,
             fullName: updatedUser.fullName, username: updatedUser.username, email: updatedUser.email
             , avatar: updatedUser.avatar
         }
@@ -186,15 +188,25 @@ export const updateUserDetails = async (request, response, next) => {
 export const deleteUserAccount = async (request, response, next) => {
     try {
         const { id } = request.params;
-        // if (request?.user?.uid !== id) {
-        //     return response.status(401).json({ error: true, message: `Not Authorized` })
-        // }
+        if (request?.user?.uid !== id) {
+            return response.status(401).json({ error: true, message: `Not Authorized` })
+        }
 
-        const deleteUser = await UserModel.findByIdAndDelete({ _id: id });
+        await UserModel.findByIdAndDelete({ _id: id });
 
         return response.status(200).json({ error: false, message: 'User Deleted Successfully!' });
 
     } catch (error) {
         next(error)
+    }
+}
+
+export const userSignOut = async (request, response, next) => {
+    try {
+        
+        response.clearCookie('token');
+        response.status(OK).json({error : false, message: 'Signed Out Successfully'});
+    } catch (error) {
+        next(error);
     }
 }
