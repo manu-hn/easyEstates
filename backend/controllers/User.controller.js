@@ -148,9 +148,9 @@ export const updateUserDetails = async (request, response, next) => {
 
         const { password, fullName, username, email, avatar } = request.body;
 
-        // if (request?.user?.uid !== id) {
-        //     return response.status(401).json({ error: true, message: `Not Authorized` })
-        // }
+        if (request?.user?.uid !== id) {
+            return response.status(401).json({ error: true, message: `Not Authorized` })
+        }
 
         const isUserAvailable = await UserModel.findById({ _id: id });
 

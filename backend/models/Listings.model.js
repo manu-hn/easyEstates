@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const ListingSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, default: "" },
-    price: { type: Number, required: true },
+   
     address: {
         street: { type: String, required: true },
         city: { type: String, required: true },
@@ -27,6 +27,7 @@ const ListingSchema = new Schema({
     offer: {
         type: Boolean, required: true
     },
+    type : { type: String, required: true},
     imageURLs: {
         type: Array,
         required: true,
