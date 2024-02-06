@@ -5,6 +5,7 @@ import useCreateListings from "../../utils/useCreateListings.js";
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"
 
+
 const CreateListing = () => {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -198,7 +199,7 @@ const CreateListing = () => {
                 <div className='max-w-2xl flex flex-col gap-6 py-3'>
 
                     <input type="text" placeholder='Title' className='border p-3 rounded-lg ' onChange={handleFormDataChange}
-                        value={formData.title} id='title' maxLength='62' minLength='8' required />
+                        value={formData?.title} id='title' maxLength='62' minLength='8' required />
 
                     <textarea type="text" placeholder='Description' className='border p-3 rounded-lg '
                         id='description' required onChange={handleFormDataChange} value={formData.description}
@@ -207,20 +208,20 @@ const CreateListing = () => {
                     <div className='flex flex-col sm:flex-row gap-4 flex-wrap'>
 
                         <input type="text" placeholder='Street' className='border p-3 rounded-lg '
-                            onChange={handleFormDataChange} value={formData.address.street} id='address.street' required />
+                            onChange={handleFormDataChange} value={formData?.address?.street} id='address.street' required />
                         <input type="text" placeholder='City' className='border p-3 rounded-lg '
-                            onChange={handleFormDataChange} value={formData.address.city} id='address.city' required />
+                            onChange={handleFormDataChange} value={formData?.address?.city} id='address.city' required />
                         <input type="text" placeholder='State' className='border p-3 rounded-lg '
-                            onChange={handleFormDataChange} value={formData.address.state} id='address.state' required />
+                            onChange={handleFormDataChange} value={formData?.address.state} id='address.state' required />
                         <div className='flex flex-col sm:flex-row gap-4'>
                             <input type="Number" placeholder='PinCode' className='border p-3 rounded-lg ' 
-                                onChange={handleFormDataChange} value={formData.address.zipcode.code} id='address.zipcode.code' required />
+                                onChange={handleFormDataChange} value={formData?.address?.zipcode?.code} id='address.zipcode.code' required />
                             <select
                                 className='rounded-lg px-4 py-2'
                                 name='location_type'
                                 id='address.zipcode.location_type'
                                 onChange={handleLocationTypeChange}
-                                value={formData.address.zipcode.location_type}
+                                value={formData?.address?.zipcode?.location_type}
                             >
                                 <option value='#'>Select</option>
                                 <option value='Residential'>Residential</option>
@@ -231,27 +232,27 @@ const CreateListing = () => {
                     <div className='flex flex-wrap gap-6'>
                         <div className='flex gap-2'>
                             <input type="checkbox" id='sale' className='w-5'
-                                onChange={handleFormDataChange} checked={formData.type === 'sale'} />
+                                onChange={handleFormDataChange} checked={formData?.type === 'sale'} />
                             <span>Sell</span>
                         </div>
                         <div className='flex gap-2'>
                             <input type="checkbox" id='rent' className='w-5'
-                                onChange={handleFormDataChange} checked={formData.type === 'rent'} />
+                                onChange={handleFormDataChange} checked={formData?.type === 'rent'} />
                             <span>Rent</span>
                         </div>
                         <div className='flex gap-2'>
                             <input type="checkbox" id='parking' className='w-5'
-                                onChange={handleFormDataChange} checked={formData.parking} />
+                                onChange={handleFormDataChange} checked={formData?.parking} />
                             <span>Parking</span>
                         </div>
                         <div className='flex gap-2'>
                             <input type="checkbox" id='furnished' className='w-5'
-                                onChange={handleFormDataChange} checked={formData.furnished} />
+                                onChange={handleFormDataChange} checked={formData?.furnished} />
                             <span>Furnished</span>
                         </div>
                         <div className='flex gap-2'>
                             <input type="checkbox" id='offer' className='w-5'
-                                onChange={handleFormDataChange} checked={formData.offer} />
+                                onChange={handleFormDataChange} checked={formData?.offer} />
                             <span>Offer</span>
                         </div>
                     </div>
@@ -265,23 +266,23 @@ const CreateListing = () => {
                         <div className='flex items-center gap-3'>
 
                             <input type="number" name="bedrooms" id="bedrooms.total" min={'1'} max={'10'}
-                                className='py-2 px-4 w-24 rounded-lg border' onChange={handleFormDataChange} value={formData.bedrooms.total} />
+                                className='py-2 px-4 w-24 rounded-lg border' onChange={handleFormDataChange} value={formData?.bedrooms?.total} />
                             <p>Bed Rooms</p>
                         </div>
                         <div className='flex items-center gap-3'>
                             <input type="number" name="guest" id="bedrooms.guest" max="2" min='0'
-                                className='py-2 px-4 w-24  rounded-lg border' onChange={handleFormDataChange} value={formData.bedrooms.guest} />
+                                className='py-2 px-4 w-24  rounded-lg border' onChange={handleFormDataChange} value={formData?.bedrooms?.guest} />
                             <p>Guest Rooms</p>
                         </div>
                         <div className='flex items-center gap-3'>
                             <input type="number" name="bathrooms" id="bathrooms" min={'1'} max={'5'}
-                                className='py-2 w-24 px-5 rounded-lg border' onChange={handleFormDataChange} value={formData.bathrooms} />
+                                className='py-2 w-24 px-5 rounded-lg border' onChange={handleFormDataChange} value={formData?.bathrooms} />
                             <p>Baths</p>
                         </div>
 
                         <div className='flex items-center gap-3'>
                             <input type="number" name="regularPrice" id="regularPrice" min={'1500'} onChange={handleFormDataChange}
-                                className='py-2 px-4 w-24 rounded-lg border' value={formData.regularPrice} />
+                                className='py-2 px-4 w-24 rounded-lg border' value={formData?.regularPrice} />
                             <div className='flex flex-col items-center'>
                                 <p>Regular Price</p>
                                 <span>(₹ / month)</span>
@@ -291,7 +292,7 @@ const CreateListing = () => {
                             formData.offer && (
                                 <div className='flex items-center gap-3'>
                                     <input type="number" name="discountPrice" id="discountPrice" onChange={handleFormDataChange}
-                                        className='py-2 px-4 rounded-lg border w-24' value={formData.discountPrice} />
+                                        className='py-2 px-4 rounded-lg border w-24' value={formData?.discountPrice} />
                                     <div className='flex flex-col items-center '>
                                         <p>Discount Price</p>
                                         <span>(₹ / month)</span>
@@ -333,4 +334,4 @@ const CreateListing = () => {
     )
 }
 
-export default CreateListing
+export default CreateListing;

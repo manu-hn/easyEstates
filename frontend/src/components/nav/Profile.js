@@ -7,19 +7,26 @@ import axios from 'axios';
 import { DELETE_URL, ESTATE_URL, UPDATE_URL } from '../../utils/Constants.js';
 import jsCookie from 'js-cookie';
 import { Link, useNavigate } from 'react-router-dom';
+import useListings from '../../utils/useListings.js';
+import DeleteListing from '../Listing/DeleteListing.js';
+import EditListing from '../Listing/EditListing.js';
 
 
 
 const Profile = () => {
+  const [userListings, setUserListings] = useState([]);
+  const [deleteListing, setDeleteListing] = useState([]);
+
   const navigate = useNavigate()
   const fileRef = useRef(null);
   const [message, setMessage] = useState('');
   const dispatch = useDispatch();
-  const { currentUser, isAuthenticated, loading} = useSelector(store => store.user);
+  const { currentUser, isAuthenticated, loading } = useSelector(store => store.user);
   const [file, setFile] = useState(null);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const { getAllListings, showListingsError } = useListings()
   console.log("formData", formData)
 
   useEffect(() => {
@@ -57,10 +64,10 @@ const Profile = () => {
   }
   async function handleFormSubmit(e) {
     e.preventDefault();
-    
+
     try {
       dispatch(updateUserStart());
- 
+
       const response = await axios.post(UPDATE_URL + `${currentUser.uid}`, JSON.stringify(formData), {
         headers: {
           Authorization: jsCookie.get('token'),
@@ -113,6 +120,17 @@ const Profile = () => {
       dispatch(signOutUserFailure(error.message))
     }
   }
+
+  const handleFetchListings = async () => {
+    try {
+
+      const res = await getAllListings(currentUser.uid);
+      setUserListings(res.listings)
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className='p-4 max-w-lg mx-auto'>
       <h1 className='text-3xl text-center font-semibold my-8'>Profile</h1>
@@ -148,6 +166,32 @@ const Profile = () => {
         <span onClick={handleSignOut} className='cursor-pointer font-medium text-red-700'>Sign Out</span>
       </div>
       <span className='text-green-500'>{message}</span>
+      <button onClick={handleFetchListings} className='text-green-700 w-full font-semibold text-center'>Show Listings</button>
+      <p>{showListingsError}</p>
+      {
+        userListings && userListings.length > 0 &&
+        <div className='flex flex-col gap-3'>
+          <h1 className='text-center mt-7 text-xl font-semibold '>Your Listings</h1>
+          <p>{deleteListing}</p>
+          {userListings.map((listing) => {
+            return (
+              <div key={listing._id} className='flex gap-4 border items-center justify-between overflow-hidden px-3 py-2'>
+                <Link to={`/listing/${listing._id}`}>
+                  <img src={listing.imageURLs[0]} alt="Listing cover"
+                    className='size-20 object-contain ' />
+                </Link>
+                <Link className='w-[60%]' to={`/listing/${listing._id}`}>
+                  <p className='font-semibold text-slate-800 flex-1 hover:underline line-clamp-1'>{listing.title}</p>
+                </Link>
+                <div className='flex flex-col items-center'>
+                  <DeleteListing userListings={userListings} deleteListingStatus={(status) => setDeleteListing(status)} updateListings={(listings)=>setUserListings(listings)} lid={listing._id} />
+                  <Link to={`/update-listing/${listing._id}`}><button className='text-green-700'>Edit</button></Link>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      }
     </div>
   )
 }
