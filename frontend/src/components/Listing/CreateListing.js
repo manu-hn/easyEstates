@@ -183,7 +183,7 @@ const CreateListing = () => {
             console.log(response)
             if (!response.error) {
                 setLoading(false)
-                navigate(`/listings/${response.newListing._id}`);
+                navigate(`/listing/${response.newListing._id}`);
             }
 
 

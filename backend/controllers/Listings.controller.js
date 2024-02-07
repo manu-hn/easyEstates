@@ -82,9 +82,54 @@ export const getListingById = async (req, res, next) => {
             return res.status(404).json({ error: true, message: ` Listing Not Found` });
         }
 
-        return res.status(200).json({ error: false, singleListing});
+        return res.status(200).json({ error: false, singleListing });
 
     } catch (error) {
         next(error);
     }
 };
+
+export const fetchAllListings = async (req, res, next) => {
+    try {
+        
+        const { search, limit, start, offer, furnished, parking, sort, order, type, locationType } = req.query;
+        console.log(type)
+        const options = {
+            skip: (parseInt(start) - 1) * parseInt(limit),
+            limit: (parseInt(limit))
+        }
+
+        let queryObject = {};
+        if (search) {
+            queryObject = { title: { $regex: search, $options: 'i' } }
+        }
+
+        if (offer) {
+            const finder = offer === 'true' ? true : false;
+            queryObject = { ...queryObject, offer: { $in: [finder] } }
+        }
+
+        if (furnished) {
+            const finder = furnished === 'true' ? true : false;
+            queryObject = { ...queryObject, furnished: { $in: [finder] } }
+        }
+
+        if (parking) {
+            const finder = parking === 'true' ? true : false;
+            queryObject = { ...queryObject, parking: { $in: [finder] } }
+        }
+        if (type) {
+            const finder = type === 'rent' ? 'rent' : 'sale';
+            queryObject = { ...queryObject, type: { $in: [finder] } }
+        }
+        if (locationType) {
+            const finder = locationType === 'Residential' ? 'Residential' : 'Commercial';
+            queryObject = { ...queryObject, "address.zipcode.location_type": { $in: [finder] } }
+        }
+        const listings = await ListingModel.find(queryObject, {}, options).sort({ [sort]: order === 'desc' ? -1 : 1 });
+
+        return res.status(OK).json({ error: false, total: listings?.length, listings })
+    } catch (error) {
+        next(error)
+    }
+}

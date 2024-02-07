@@ -203,9 +203,27 @@ export const deleteUserAccount = async (request, response, next) => {
 
 export const userSignOut = async (request, response, next) => {
     try {
-        
+
         response.clearCookie('token');
-        response.status(OK).json({error : false, message: 'Signed Out Successfully'});
+        response.status(OK).json({ error: false, message: 'Signed Out Successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getUserDetails = async (request, response, next) => {
+    try {
+        const { id } = request.params;
+
+        const isUserAvailable = await UserModel.findById({ _id: id });
+
+        if (!isUserAvailable) {
+            return response.status(400).json({ error: true, message: 'User Not Available' });
+        }
+
+       
+        const { password, ...rest } = isUserAvailable._doc;
+        return response.status(200).json({ error: false, message: 'Data Retrieved Successfully', data: rest });
     } catch (error) {
         next(error);
     }

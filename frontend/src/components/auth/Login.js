@@ -14,7 +14,7 @@ const Login = () => {
   const { loading, error } = useSelector(state => state.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
 
   const email = useRef(null);
   const password = useRef(null);
@@ -30,12 +30,12 @@ const Login = () => {
           headers: { 'Content-type': 'application/json' },
           withCredentials: true,
         });
-      console.log(response?.data?.access_token)
-      jsCookie.set('token',response?.data?.access_token )
+      // console.log(response?.data?.access_token)
+      jsCookie.set('token', response?.data?.access_token)
       dispatch(loginSuccess(response.data.data))
 
       // setCookie('access_tokenF', response?.data?.access_token)
-console.log("hiii")
+      // console.log("hiii")
       navigate('/')
     } catch (error) {
       dispatch(loginFailure(error?.response?.data?.message))

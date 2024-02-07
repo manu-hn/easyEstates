@@ -9,6 +9,7 @@ import PrivateRoute from './auth/PrivateRoute.js';
 import Header from './nav/Header.js';
 import CreateListing from './Listing/CreateListing.js';
 import EditListing from './Listing/EditListing.js';
+import Listing from './Listing/Listing.js';
 
 const Body = () => {
 
@@ -24,6 +25,7 @@ const Body = () => {
 
                     <Route path='/login' element={<Login />} />
                     <Route path='/signup' element={<SignUp />} />
+                    <Route path='/listing/:id' element={<Listing />} />
                     <Route element={<PrivateRoute />}>
                         <Route path='/profile' element={<Profile />} />
                         <Route path='/create-listing' element={<CreateListing />} />
