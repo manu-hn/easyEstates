@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
 
 
 
 const Header = () => {
   const [isNavBarOpen, setIsNavBarOpen] = useState(false);
-  const { currentUser, isAuthenticated } = useSelector(store => store.user)
+  const [search, setSearch] = useState('')
+  const { currentUser, isAuthenticated } = useSelector(store => store.user);
+  const navigate = useNavigate()
 
-  function handleNavbar(e) {
-    e.preventDefault()
-    setIsNavBarOpen(!isNavBarOpen);
+
+
+  const handleHeaderFormSubmit = async (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('search', search);
+    const searchQuery = urlParams.toString();
+    navigate(`/fetch?${searchQuery}`)
+    
   }
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromURL = urlParams.get('fetch');
+    if(searchTermFromURL){
+      setSearch(searchTermFromURL)
+    }
+
+  }, [location.search])
 
   return (
-    <header className='bg-slate-300 shadow-lg '>
+    <header className='bg-slate-300 shadow-md '>
       <div className='flex justify-between items-center max-w-6xl p-4 mx-auto'>
         <Link to={'/'}>
           <h1 className='font-bold text-sm sm:text-xl flex flex-wrap'>
@@ -23,13 +39,13 @@ const Header = () => {
             <span className=' text-orange-600'>Estates</span>
           </h1>
         </Link>
-        <form action="" className='bg-slate-100 rounded-md py-1 px-4 flex items-center'>
+        <form action="" className='bg-slate-100 rounded-md py-1 px-4 flex items-center' onSubmit={handleHeaderFormSubmit}>
 
-          <input type="text" name="" id=""
-            className='px-4 rounded-lg bg-transparent outline-none w-24 sm:w-56 placeholder:text-xs '
+          <input type="text" name="" id="" value={search} onChange={(e) => setSearch(e.target.value)}
+            className='px-4 rounded-lg bg-transparent outline-none w-24 sm:text-lg  sm:w-56 placeholder:text-xs sm:placeholder::text-lg '
             placeholder='Search Here...' />
 
-          <button><FaSearch /></button>
+          <button type='submit'><FaSearch /></button>
         </form>
         <div className=''>
           <ul className='flex gap-6 items-center'>

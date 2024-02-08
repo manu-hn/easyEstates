@@ -93,7 +93,7 @@ export const fetchAllListings = async (req, res, next) => {
     try {
         
         const { search, limit, start, offer, furnished, parking, sort, order, type, locationType } = req.query;
-        console.log(type)
+      
         const options = {
             skip: (parseInt(start) - 1) * parseInt(limit),
             limit: (parseInt(limit))

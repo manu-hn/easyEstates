@@ -10,6 +10,7 @@ import Header from './nav/Header.js';
 import CreateListing from './Listing/CreateListing.js';
 import EditListing from './Listing/EditListing.js';
 import Listing from './Listing/Listing.js';
+import SearchListing from './Listing/SearchListing.js';
 
 const Body = () => {
 
@@ -26,6 +27,7 @@ const Body = () => {
                     <Route path='/login' element={<Login />} />
                     <Route path='/signup' element={<SignUp />} />
                     <Route path='/listing/:id' element={<Listing />} />
+                    <Route path='/fetch' element={<SearchListing />} />
                     <Route element={<PrivateRoute />}>
                         <Route path='/profile' element={<Profile />} />
                         <Route path='/create-listing' element={<CreateListing />} />

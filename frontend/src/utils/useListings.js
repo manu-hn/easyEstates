@@ -60,9 +60,10 @@ const useListings = () => {
         }
     }
 
+    
 
     return {
-        getAllListings, showListingsError, deleteListing, fetchListingById
+        getAllListings, showListingsError, deleteListing, fetchListingById, 
     }
 }
 
