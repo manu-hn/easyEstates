@@ -91,45 +91,52 @@ export const getListingById = async (req, res, next) => {
 
 export const fetchAllListings = async (req, res, next) => {
     try {
-        
+        console.log(req.query)
+
         const { search, limit, start, offer, furnished, parking, sort, order, type, locationType } = req.query;
-      
-        const options = {
-            skip: (parseInt(start) - 1) * parseInt(limit),
-            limit: (parseInt(limit))
-        }
+
 
         let queryObject = {};
+
         if (search) {
-            queryObject = { title: { $regex: search, $options: 'i' } }
+            queryObject.title = { $regex: search, $options: 'i' };
         }
 
         if (offer) {
-            const finder = offer === 'true' ? true : false;
-            queryObject = { ...queryObject, offer: { $in: [finder] } }
+            const finder = offer === 'true' ? true : false
+            queryObject.offer = finder;
         }
 
         if (furnished) {
-            const finder = furnished === 'true' ? true : false;
-            queryObject = { ...queryObject, furnished: { $in: [finder] } }
+            const finder = furnished === 'true' ? true : false
+            queryObject.furnished = finder;
         }
 
         if (parking) {
-            const finder = parking === 'true' ? true : false;
-            queryObject = { ...queryObject, parking: { $in: [finder] } }
+            const finder = parking === 'true' ? true : false
+            queryObject.parking = finder;
         }
-        if (type) {
-            const finder = type === 'rent' ? 'rent' : 'sale';
-            queryObject = { ...queryObject, type: { $in: [finder] } }
-        }
-        if (locationType) {
-            const finder = locationType === 'Residential' ? 'Residential' : 'Commercial';
-            queryObject = { ...queryObject, "address.zipcode.location_type": { $in: [finder] } }
-        }
-        const listings = await ListingModel.find(queryObject, {}, options).sort({ [sort]: order === 'desc' ? -1 : 1 });
 
-        return res.status(OK).json({ error: false, total: listings?.length, listings })
+        if (type && type !== 'all') {
+
+            queryObject.type = type === 'all' ? "" : (type === 'rent' ? 'rent' : 'sale');
+        }
+
+        if (locationType) {
+            const finder= locationType === 'Residential' ? 'Residential' : 'Commercial';
+
+            queryObject["address.zipcode.location_type"] = finder
+        }
+
+        console.log(queryObject);
+
+        const listings = await ListingModel.find(queryObject).sort({ [sort]: order === 'desc' ? -1 : 1 }).limit(parseInt(limit)).skip(parseInt(start));
+
+        console.log(listings);
+
+        return res.status(OK).json({ error: false, total: listings?.length, listings });
     } catch (error) {
-        next(error)
+        next(error);
     }
+
 }
