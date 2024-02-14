@@ -10,7 +10,6 @@ const SignUp = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const [signUpData, setSignUpData] = useState({});
-console.log("signup ", signUpData)
     
     const handleSignUpFormDataChange=(e)=>{
         setSignUpData({...signUpData, [e.target.id] : e.target.value});  
@@ -22,7 +21,7 @@ console.log("signup ", signUpData)
         setIsLoading(true)
         try {
             const response = await axios.post(ESTATE_URL + "signup", JSON.stringify(signUpData), { headers: { 'Content-type': 'application/json' } });
-            console.log(response.data)
+         
             setIsLoading(false);
             navigate('/login');
 

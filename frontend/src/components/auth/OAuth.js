@@ -24,7 +24,7 @@ const OAuth = () => {
 
             dispatch(loginSuccess(backendResponse.data.data));
             navigate('/')
-            console.log(response)
+            
 
         } catch (error) {
             console.log('Google auth failed ', error)

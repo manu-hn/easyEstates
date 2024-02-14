@@ -33,7 +33,7 @@ const useListings = () => {
                 };
 
                 const response = await axios.delete(DELETE_LISTING_URL + `${lid}`, config);
-                console.log(response);
+               
                 return response.data;
             }
 
@@ -44,12 +44,7 @@ const useListings = () => {
     }
 
     const fetchListingById = async (lid) => {
-        let token = jsCookie.get('token');
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        };
+      
         try {
 
             const response = await axios.get(GET_SINGLE_LISTINGS + lid);

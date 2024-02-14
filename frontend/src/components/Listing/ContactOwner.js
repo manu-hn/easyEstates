@@ -17,7 +17,7 @@ const ContactOwner = ({ listing }) => {
                 }
             };
             const response = await axios.get(ESTATE_URL + listing.userRef, config);
-            console.log(response.data.data);
+          
             setOwner(response.data.data);
 
         } catch (error) {

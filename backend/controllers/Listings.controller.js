@@ -131,8 +131,7 @@ export const fetchAllListings = async (req, res, next) => {
      
         const listings = await ListingModel.find(queryObject).sort({ [sort]: order === 'desc' ? -1 : 1 }).limit(parseInt(limit || 10)).skip(parseInt(start || 0));
 
-       console.log("Length",listings.length)
-
+    
         return res.status(OK).json({ error: false, total: listings?.length, listings });
     } catch (error) {
         next(error);

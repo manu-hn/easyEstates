@@ -44,7 +44,7 @@ const CreateListing = () => {
   const [imageUploadFailure, setImageUploadFailure] = useState(false);
   const { updateListingsFromHook } = useCreateListings();
   const { currentUser } = useSelector((store => store.user))
-  console.log(formData)
+ 
 
   useEffect(() => {
     fetchHandler(id);
@@ -94,7 +94,7 @@ const CreateListing = () => {
       uploadTask.on('state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(progress)
+          
         },
 
         (error) => {
@@ -192,7 +192,7 @@ const CreateListing = () => {
       setLoading(true);
       setError(false)
       const response = await updateListingsFromHook({ ...formData, userRef: currentUser.uid },id );
-      console.log(response)
+   
       if (!response.error) {
         setLoading(false)
         navigate(`/listing/${response.updatedListing._id}`);

@@ -17,7 +17,7 @@ const ListingItem = ({ listing }) => {
             <div className='p-3 '>
                 <p className='truncate text-lg font-semibold text-slate-700'>{listing.title}</p>
                 <div className='flex items-center'>
-                    <MdLocationOn className='text-red-700 size-7' />
+                    <MdLocationOn className='text-green-700 size-7' />
                     <div className='flex w-full justify-between text-sm text-gray-500 truncate'>
                         <p>{listing?.address?.street}</p>
                         <p>{listing?.address?.city}</p>

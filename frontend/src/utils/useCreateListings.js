@@ -12,8 +12,7 @@ const useCreateListings = () => {
                     'Content-type': 'application/json'
                 }
             })
-
-            console.log(response.data);
+ 
             return response.data;
         } catch (error) {
             console.log(error)
@@ -27,8 +26,6 @@ const useCreateListings = () => {
                     'Content-type': 'application/json'
                 }
             })
-
-            console.log(response.data);
             return response.data;
         } catch (error) {
             console.log(error)
