@@ -2,10 +2,11 @@
   "name": "easy-estate",
   "version": "1.0.0",
   "description": "Easy Estate is a real Estate MERN Stack Stack Web App",
-  "main": "index.js",
+  
   "scripts": {
     "test": "jest",
-    "start": "npx parcel public/index.html"
+    "start": "npx parcel public/index.html",
+    "build" : "npx parcel build public/index.html"
   },
   "repository": {
     "type": "git",

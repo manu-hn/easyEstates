@@ -7,7 +7,8 @@ import { randomPasswordGenerator } from "../utils/PasswordGenerator.js";
 import { randomUniqueUsernameGenerator } from "../utils/UserNameGenarator.js";
 
 
-const { CREATED, BAD_REQUEST, NOT_ACCEPTABLE, FORBIDDEN, OK } = StatusCodes;
+
+const { CREATED, BAD_REQUEST, ACCEPTED, NOT_ACCEPTABLE, FORBIDDEN, OK , UNAUTHORIZED, NOT_FOUND} = StatusCodes;
 
 export const userSignup = async (request, response, next) => {
     try {
@@ -51,7 +52,7 @@ export const userLogin = async (request, response, next) => {
         const isUserAvailable = await UserModel.findOne({ email });
 
         if (!isUserAvailable) {
-            return response.status(NOT_ACCEPTABLE).json({ error: true, statusCode: NOT_ACCEPTABLE, message: `User Not Found !` })
+            return response.status(NOT_FOUND).json({ error: true, statusCode: NOT_ACCEPTABLE, message: `User Not Found !` })
         }
 
         const isPasswordCorrect = await isPasswordValid(password, isUserAvailable.password);
@@ -149,13 +150,13 @@ export const updateUserDetails = async (request, response, next) => {
         const { password, fullName, username, email, avatar } = request.body;
 
         if (request?.user?.uid !== id) {
-            return response.status(401).json({ error: true, message: `Not Authorized` })
+            return response.status(UNAUTHORIZED).json({ error: true, message: `Not Authorized` })
         }
 
         const isUserAvailable = await UserModel.findById({ _id: id });
 
         if (!isUserAvailable) {
-            return response.status(401).json({ error: true, message: `User not Authorized` })
+            return response.status(UNAUTHORIZED).json({ error: true, message: `User not Authorized` })
         }
 
         let hashedPassword;
@@ -177,7 +178,7 @@ export const updateUserDetails = async (request, response, next) => {
             , avatar: updatedUser.avatar
         }
 
-        return response.status(200).json({ error: false, message: `User Details Updated Successfully`, data: sendData })
+        return response.status(ACCEPTED).json({ error: false, message: `User Details Updated Successfully`, data: sendData })
 
     } catch (error) {
         next(error);
@@ -189,12 +190,12 @@ export const deleteUserAccount = async (request, response, next) => {
     try {
         const { id } = request.params;
         if (request?.user?.uid !== id) {
-            return response.status(401).json({ error: true, message: `Not Authorized` })
+            return response.status(UNAUTHORIZED).json({ error: true, message: `Not Authorized` })
         }
 
         await UserModel.findByIdAndDelete({ _id: id });
 
-        return response.status(200).json({ error: false, message: 'User Deleted Successfully!' });
+        return response.status(ACCEPTED).json({ error: false, message: 'User Deleted Successfully!' });
 
     } catch (error) {
         next(error)
@@ -218,12 +219,12 @@ export const getUserDetails = async (request, response, next) => {
         const isUserAvailable = await UserModel.findById({ _id: id });
 
         if (!isUserAvailable) {
-            return response.status(400).json({ error: true, message: 'User Not Available' });
+            return response.status(NOT_FOUND).json({ error: true, message: 'User Not Available' });
         }
 
        
         const { password, ...rest } = isUserAvailable._doc;
-        return response.status(200).json({ error: false, message: 'Data Retrieved Successfully', data: rest });
+        return response.status(OK).json({ error: false, message: 'Data Retrieved Successfully', data: rest });
     } catch (error) {
         next(error);
     }
