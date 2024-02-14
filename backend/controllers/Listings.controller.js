@@ -91,7 +91,7 @@ export const getListingById = async (req, res, next) => {
 
 export const fetchAllListings = async (req, res, next) => {
     try {
-        console.log(req.query)
+        
 
         const { search, limit, start, offer, furnished, parking, sort, order, type, locationType } = req.query;
 
@@ -128,11 +128,10 @@ export const fetchAllListings = async (req, res, next) => {
             queryObject["address.zipcode.location_type"] = finder
         }
 
-        console.log(queryObject);
+     
+        const listings = await ListingModel.find(queryObject).sort({ [sort]: order === 'desc' ? -1 : 1 }).limit(parseInt(limit || 10)).skip(parseInt(start || 0));
 
-        const listings = await ListingModel.find(queryObject).sort({ [sort]: order === 'desc' ? -1 : 1 }).limit(parseInt(limit)).skip(parseInt(start));
-
-        console.log(listings);
+       console.log("Length",listings.length)
 
         return res.status(OK).json({ error: false, total: listings?.length, listings });
     } catch (error) {

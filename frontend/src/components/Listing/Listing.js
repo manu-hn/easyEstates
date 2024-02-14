@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useListings from '../../utils/useListings';
 import { useParams } from 'react-router-dom';
-import { CCarousel, CCarouselItem, CImage } from "@coreui/react"; // Correct import
+import { CCarousel, CCarouselItem, CImage } from "@coreui/react"; 
 import '@coreui/coreui/dist/css/coreui.min.css';
 import {
     FaBath,
@@ -90,11 +90,11 @@ const Listing = () => {
                                     ? listing.discountPrice.toLocaleString('en-US')
                                     : listing.regularPrice.toLocaleString('en-US')
                             }
-                            {listing.type === 'rent' && ' Rs - / month'}
-                            {listing.type === 'sale' && ' for property'}
+                            {listing?.type === 'rent' && ' Rs - / month'}
+                            {listing?.type === 'sale' && ' for property'}
                         </h1>
-                        <ul className='flex w-full justify-between my-2 flex-wrap text-sm sm:text-lg'>
-                            <span> <FaMapMarkerAlt className='text-green-800 text-sm font-semibold' /> </span>
+                        <ul className='flex w-full items-center justify-between my-2 flex-wrap text-sm sm:text-lg'>
+                            <span> <FaMapMarkerAlt className='text-green-800 text-lg font-semibold' /> </span>
                             <li className='font-semibold'>  Street :  <span className='font-extralight text-gray-700'>{listing?.address?.street}</span> </li>
                             <li className='font-semibold'>  City :    <span className='font-extralight text-gray-700'>{listing?.address?.city}</span> </li>
                             <li className='font-semibold'>  State :   <span className='font-extralight text-gray-700'>{listing?.address?.state}</span> </li>
@@ -132,8 +132,9 @@ const Listing = () => {
                             )}
 
                             {
-                                contactOwner && <ContactOwner listing={listing} />
+                                contactOwner && <ContactOwner listing={listing} /> 
                             }
+                          
                     </div>
                 </div>
             )}

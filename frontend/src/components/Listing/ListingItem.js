@@ -2,17 +2,22 @@ import React from 'react';
 import { MdLocationOn } from 'react-icons/md'
 
 const ListingItem = ({ listing }) => {
-    console.log(listing)
+
+
+    if (!listing || !listing.imageURLs || !listing.imageURLs[0]) {
+        // Return some default content or handle the case where listing or imageURLs are not available
+        return null;
+    }
     return (
         <div className='bg-white shadow-md hover:shadow-lg transition-shadow w-[15rem] rounded-lg overflow-hidden'>
             <div className='overflow-hidden w-full'>
-                <img src={listing.imageURLs[0]} alt="Listing Image"
+                <img src={listing?.imageURLs[0] } alt="Listing Image"
                     className='h-[12rem] object-cover hover:scale-110 transition-scale duration-300  sm:h-[10rem] ' />
             </div>
             <div className='p-3 '>
                 <p className='truncate text-lg font-semibold text-slate-700'>{listing.title}</p>
                 <div className='flex items-center'>
-                    <MdLocationOn className='text-green-700 size-5' />
+                    <MdLocationOn className='text-red-700 size-7' />
                     <div className='flex w-full justify-between text-sm text-gray-500 truncate'>
                         <p>{listing?.address?.street}</p>
                         <p>{listing?.address?.city}</p>

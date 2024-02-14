@@ -18,7 +18,10 @@ const SearchListings = () => {
     sort: 'createdAt',
     order: 'desc',
     locationType: 'Commercial',
+    start : 0,
+    limit : 10
   });
+  const [showMore, setShowMore] = useState(false);
 
 
 
@@ -111,6 +114,8 @@ const SearchListings = () => {
     const offerFromURL = urlParams.get('offer');
     const sortFromURL = urlParams.get('sort');
     const orderFromURL = urlParams.get('order');
+    const startFromURL = urlParams.get('start');
+    const limitFromURL = urlParams.get('limit');
 
     if (
       searchFromURL ||
@@ -131,6 +136,8 @@ const SearchListings = () => {
         offer: offerFromURL === 'true' ? true : false,
         sort: sortFromURL || 'createdAt',
         order: orderFromURL || 'desc',
+        start : startFromURL || 0,
+        limit : limitFromURL || 10
       });
     }
 
@@ -141,7 +148,11 @@ const SearchListings = () => {
         const res = await axios.get(`http://localhost:5000/api/listings/fetch?${searchQuery}`);
         setListings(res?.data?.listings);
         setTotalListings(res?.data?.total);
-        console.log(res?.data?.listings);
+      
+        if(res?.data?.listings.length > 9) {
+          setShowMore(true)
+
+        }
         setLoading(false);
       } catch (error) {
 
@@ -164,6 +175,8 @@ const SearchListings = () => {
     urlParams.set('offer', sideBarData?.offer.toString());
     urlParams.set('sort', sideBarData?.sort);
     urlParams.set('order', sideBarData?.order);
+    urlParams.set('start', 0);
+    urlParams.set('limit',10);
     const searchQuery = urlParams.toString();
     navigate(`/fetch?${searchQuery}`);
   };
@@ -176,6 +189,31 @@ const SearchListings = () => {
   // };
 
   // const debouncedHandleChange = debounce(handleChange, 300); 
+
+  const showMoreListings = async () => {
+    const numberOfListings = listings.length;
+    const start = numberOfListings ;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("start", start);
+    const searchQuery = urlParams.toString();
+  
+    try {
+      const res = await axios.get(`http://localhost:5000/api/listings/fetch?${searchQuery}`);
+      
+      if (res?.data?.listings?.length > 0) {
+        setListings((prevListings) => [...prevListings, ...res?.data?.listings]);
+        // setTotalListings(listings.length)
+        console.log(listings.length)
+      }
+  
+      if (res?.data?.listings?.length < 9) {
+        setShowMore(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
@@ -308,6 +346,11 @@ const SearchListings = () => {
             })
           }
         </div>
+        {
+          showMore && (
+            <button className='text-green-700 hover:underline p-7 w-full text-center' onClick={showMoreListings}>Show more</button>
+          )
+        }
       </div>
     </div>
   );
