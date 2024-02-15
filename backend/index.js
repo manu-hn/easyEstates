@@ -12,7 +12,7 @@ config();
 
 const { BAD_REQUEST } = StatusCodes;
 
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 const app = express();
 app.use(cookieParser());
@@ -28,7 +28,7 @@ app.use(`/api/estates`, UserRouter);
 app.use(`/api/listings`, ListingRoutes)
 
 
-// app.use(express.static(path.join(__dirname, '/frontend/dist')));
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
 app.use("*", (req, res, next) => {
     res.status(BAD_REQUEST).json({ error: true, message: "Error Page Not Found" })
 })
