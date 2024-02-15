@@ -203,7 +203,7 @@ const SearchListings = () => {
       if (res?.data?.listings?.length > 0) {
         setListings((prevListings) => [...prevListings, ...res?.data?.listings]);
         // setTotalListings(listings.length)
-        console.log(listings.length)
+       
       }
   
       if (res?.data?.listings?.length < 9) {

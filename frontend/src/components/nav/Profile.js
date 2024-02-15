@@ -27,7 +27,7 @@ const Profile = () => {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const { getAllListings, showListingsError } = useListings()
-  console.log("formData", formData)
+  
 
   useEffect(() => {
     if (file) {
