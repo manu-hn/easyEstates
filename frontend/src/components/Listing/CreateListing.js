@@ -274,15 +274,15 @@ const CreateListing = () => {
                                 className='py-2 px-4 w-24  rounded-lg border' onChange={handleFormDataChange} value={formData?.bedrooms?.guest} />
                             <p>Guest Rooms</p>
                         </div>
-                        <div className='flex items-center gap-3'>
+                        <div className='flex items-center gap-3 text-red'>
                             <input type="number" name="bathrooms" id="bathrooms" min={'1'} max={'5'}
-                                className='py-2 w-24 px-5 rounded-lg border' onChange={handleFormDataChange} value={formData?.bathrooms} />
+                                className='py-2 text-center w-24 px-50 rounded-lg border' onChange={handleFormDataChange} value={formData?.bathrooms} />
                             <p>Baths</p>
                         </div>
 
                         <div className='flex items-center gap-3'>
                             <input type="number" name="regularPrice" id="regularPrice" min={'1500'} onChange={handleFormDataChange}
-                                className='py-2 px-4 w-24 rounded-lg border' value={formData?.regularPrice} />
+                                className='py-2 px-4 w-28 rounded-lg border' value={formData?.regularPrice} />
                             <div className='flex flex-col items-center'>
                                 <p>Regular Price</p>
                                 <span>(₹ / month)</span>
